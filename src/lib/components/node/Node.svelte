@@ -1,42 +1,41 @@
 <script lang="ts">
-	let { left, top } = $props();
+	import type { Node as Model } from "../types";
+	let {
+		data,
+		mouseDownOnNode
+	} : {
+		data: Model,
+		mouseDownOnNode: (e: MouseEvent, id: string) => void
+	} = $props();
 </script>
 
-<div class="wrap" style:left={`${left}px`} style:top={`${top}px`}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	class="wrap"
+	style:left={`${data.position.left}px`}
+	style:top={`${data.position.top}px`}
+	onmousedown={(e) => mouseDownOnNode(e, data.id)}
+>
 	<header>
-		<div class="tablename">user_table</div>
+		<div class="tablename">{data.table.name}</div>
 		<div class="collapse"></div>
 	</header>
 	<ul>
+		{#each data.table.columns as column}
 		<li>
 			<div class="in"></div>
-			<div class="column">id</div>
+			<div class="column">{column.name}</div>
 			<div class="out"></div>
 		</li>
-		<li>
-			<div class="in"></div>
-			<div class="column">user_name</div>
-			<div class="out"></div>
-		</li>
-		<li>
-			<div class="in"></div>
-			<div class="column">age</div>
-			<div class="out"></div>
-		</li>
-		<li>
-			<div class="in"></div>
-			<div class="column">tel</div>
-			<div class="out"></div>
-		</li>
+		{/each}
 	</ul>
 </div>
 
 <style lang="scss">
 	.wrap {
 		width: 220px;
-		background-color: #202020;
+		background-color: transparent;
 		position: absolute;
-		
 		user-select: none;
 	}
 	header {
@@ -74,6 +73,7 @@
 		height: 40px;
 		display: flex;
 		align-items: center;
+		background-color: #202020;
 		&:not(:first-child) {
 			border-top: 1px solid #404040;
 		}
