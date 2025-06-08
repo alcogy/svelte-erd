@@ -1,15 +1,19 @@
 <script lang="ts">
-	import type { Node as Model } from "./types";
+	import type { Node as Model } from "../types";
 	let {
 		data,
 		selected,
 		mouseDownOnNode,
-		mouseDownOnIO,
+		mouseDownOnColumnOut,
+		mouseEnterOnColumnIn,
+		mouseLeaveOnColumnIn,
 	} : {
 		data: Model,
 		selected: boolean,
 		mouseDownOnNode: (e: MouseEvent, id: string) => void
-		mouseDownOnIO: (e: MouseEvent, id: string) => void 
+		mouseDownOnColumnOut: (e: MouseEvent, id: string) => void 
+		mouseEnterOnColumnIn: (id: string) => void
+		mouseLeaveOnColumnIn: () => void
 	} = $props();
 
 	
@@ -28,12 +32,16 @@
 	<ul>
 		{#each data.table.columns as column}
 		<li>
-			<div id={column.id.in} class="in"></div>
-			<div class="column">{column.name}</div>
+			<div
+				class="column"
+				id={column.id.in}
+				onmouseenter={() => mouseEnterOnColumnIn(column.id.in)}
+				onmouseleave={() => mouseLeaveOnColumnIn()}
+			>{column.name}</div>
 			<div
 				id={column.id.out}
 				class="out"
-				onmousedown={(e) => mouseDownOnIO(e, column.id.out)}
+				onmousedown={(e) => mouseDownOnColumnOut(e, column.id.out)}
 			></div>
 		</li>
 		{/each}
@@ -48,9 +56,11 @@
 		user-select: none;
 		border-radius: 6px 6px 0 0;
 		box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+		z-index: 1;
 		&.selected {
 			background-color: var(--main-color);
 			outline: 2px solid var(--main-color);
+			z-index: 5;
 		}
 	}
 	header {
@@ -76,7 +86,6 @@
 		&:not(:first-child) {
 			border-top: 1px solid #404040;
 		}
-		& div.in,
 		& div.out {
 			width: 16px;
 			height: 100%;
@@ -87,6 +96,7 @@
 		}
 		& div.column {
 			flex: 1;
+			padding-left: 16px;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;

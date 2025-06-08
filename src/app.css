@@ -20,8 +20,10 @@ input[type="text"] {
 button.icon {
 	background-color: transparent;
 	border: 0;
-	padding: 0;
 	cursor: pointer;
+	display: flex;
+	gap: 4px;
+	align-items: center;
 }
 button.icon:hover {
 	opacity: 0.8;

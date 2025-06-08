@@ -1,36 +1,32 @@
 // place files you want to import through the `$lib` alias in this folder.
 
-import type { Node as NodeModel, Edge as EdgeModel, Path as PathModel, ColumnHTMLID } from "$lib/components/types";
+import type { Node as NodeModel, Edge as EdgeModel, Path as PathModel, ColumnHTMLID, Column, Position } from "$lib/types";
 import { v4 as uuid } from "uuid";
-const col1 = {
-	in: uuid(),
-	out: uuid(),
-};
-const col2 = {
-	in: uuid(),
-	out: uuid(),
-};
 
 export function calcEdgePath(column: ColumnHTMLID): PathModel {
 	const outDom = document.getElementById(column.out) as HTMLElement;
 	const inDom = document.getElementById(column.in) as HTMLElement;
 	const outRect = outDom.getBoundingClientRect() || { top: 0, left: 0 };
 	const inRect = inDom.getBoundingClientRect() || { top: 0, left: 0 };
-	const start = {
+	const start: Position = {
 		left: outRect.left,
 		top: outRect.top + (outRect.height / 2),
 	}
-	const end = {
+	const end: Position = {
 		left: inRect.left,
 		top: inRect.top + (inRect.height / 2),
 	}
 	return {
 		start: start,
 		end: end,
-		center: {
-			left: (end.left + start.left) / 2,
-			top: (end.top + start.top) / 2,
-		}
+		center: calcCenterPosition(start, end),
+	}
+}
+
+export function calcCenterPosition(start: Position, end: Position): Position {
+	return {
+		left: (end.left + start.left) / 2,
+		top: (end.top + start.top) / 2,
 	}
 }
 
@@ -41,12 +37,56 @@ export function updateEdgePath(edges: EdgeModel[]): EdgeModel[] {
 	return edges;
 }
 
+export function createColumn(): Column {
+	return {
+		id: { in: uuid(), out: uuid() },
+		name: "column name",
+		type: 'varchar',
+		size: 255,
+		notNull: true,
+		default: "",
+		comment: "",
+		pk: false,
+	}
+}
+
+export function createTable(): NodeModel {
+	return {
+		id: uuid(),
+		position: { left: 20, top: 20 },
+		table: {
+			name: "table name",
+			comment: "",
+			columns: [createColumn()],
+		}
+	}
+}
+
+export function createEdge(id: ColumnHTMLID): EdgeModel {
+	return {
+		id: uuid(),
+		out: id.out,
+		in: id.in,
+		path: calcEdgePath(id),
+	}
+}
+
+// ----------------------------------------------------
+// TODO devlete below for sample data.
+// ----------------------------------------------------
+const col1 = {
+	in: uuid(),
+	out: uuid(),
+};
+const col2 = {
+	in: uuid(),
+	out: uuid(),
+};
+
 export const sampleNodes: NodeModel[] = [
 	{
 		id: '1',
 		position: { left: 530, top: 240 },
-		collapse: true,
-		selected: false,
 		table: {
 			name: "user",
 			comment: "",
@@ -86,8 +126,6 @@ export const sampleNodes: NodeModel[] = [
 	{
 		id: '2',
 		position: { left: 50, top: 90 },
-		collapse: true,
-		selected: false,
 		table: {
 			name: "programming",
 			comment: "",
@@ -135,8 +173,6 @@ export const sampleNodes: NodeModel[] = [
 	{
 		id: '3',
 		position: { left: 740, top: 490 },
-		collapse: true,
-		selected: false,
 		table: {
 			name: "company",
 			comment: "",
@@ -165,7 +201,6 @@ export const sampleNodes: NodeModel[] = [
 	},
 ]
 
-
 export const sampleEdges: EdgeModel[] = [
 	{
 		id: '1423423',
@@ -174,5 +209,3 @@ export const sampleEdges: EdgeModel[] = [
 		path: null,
 	}
 ]
-
-	

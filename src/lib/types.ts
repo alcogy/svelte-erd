@@ -48,3 +48,8 @@ export type Column = {
 }
 
 export type columnType = 'int' | 'varchar' | 'text' | 'date' | 'datetime' | 'tinyint' | 'bigint';
+
+export type globalState = {
+	nodes: Node[];
+	edges: Edge[];
+}

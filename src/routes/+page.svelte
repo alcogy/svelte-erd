@@ -1,16 +1,22 @@
 <script lang="ts">
 	import Node from "$lib/components/Node.svelte";
 	import Edge from "$lib/components/Edge.svelte";
-	import { v4 as uuid } from "uuid";
-	import type { Node as NodeModel, Edge as EdgeModel, Path as PathModel, ColumnHTMLID, Column } from "$lib/components/types";
+	import type { Node as NodeModel, Position, ColumnHTMLID } from "$lib/types";
 	import { onMount } from "svelte";
-	import { sampleNodes, sampleEdges, updateEdgePath } from "$lib";
+	import { updateEdgePath, createTable, createEdge } from "$lib";
+	import { states } from "$lib/state.svelte";
 	import SidePanel from "$lib/components/SidePanel.svelte";
+	import Connecting from "$lib/components/Connecting.svelte";
 
 	let isMouseDown = false;
 	let selectedNodeID = "";
 	let mouse = { x: 0, y: 0 };
 	let moveMode: 'node' | 'edge' | 'stage' | '' = '';
+	let connectTargetIDs: ColumnHTMLID = {
+		out: '',
+		in: '',
+	};
+	let isConnecting: { start: Position, end: Position } | undefined = $state(undefined);
 
 	function mouseDownOnStage(e: MouseEvent) {
 		e.stopPropagation();
@@ -31,40 +37,54 @@
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 		moveMode = 'node';
-		selectedNode = nodeData.find((v) => v.id === id);
+		selectedNode = states.nodes.find((v) => v.id === id);
 	}
 
-	function mouseDownOnIO(e: MouseEvent, id: string) {
+	function mouseDownOnColumnOut(e: MouseEvent, id: string) {
 		e.stopPropagation();
 		if (e.button !== 0) return;
+
 		selectedNodeID = "";
 		isMouseDown = true;
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 		moveMode = 'edge';
+
+		const io = document.getElementById(id) as HTMLElement;
+		if (!io) return;
+		connectTargetIDs.out = id;
+		const rect = io.getBoundingClientRect();
+		isConnecting = {
+			start: {
+				left: rect.left,
+				top: rect.top,
+			},
+			end: {
+				left: e.clientX,
+				top: e.clientY,
+			},
+		}
+	}
+
+	function mouseEnterOnColumnIn(id: string) {
+		connectTargetIDs.in = id;
+	}
+
+	function mouseLeaveOnColumnIn() {
+		connectTargetIDs.in = '';
 	}
 
 	function addNode() {
-		nodeData.push({
-			id: uuid(),
-			position: { left: 20, top: 20 },
-			table: {
-				name: "table name",
-				comment: "",
-				columns: [
-					{
-						id: { in: uuid(), out: uuid() },
-						name: "column name",
-						type: 'varchar',
-						size: 255,
-						notNull: true,
-						default: "",
-						comment: "",
-						pk: false,
-					},
-				]
-			}
-		});
+		states.nodes.push(createTable());
+	}
+
+	function removeNode(node: NodeModel) {
+		if (!confirm('Are you sure?')) return;
+		for (const column of node.table.columns) {
+			states.edges = states.edges.filter((v) => v.in === column.id.in || v.out === column.id.out);
+		}
+		states.nodes = states.nodes.filter((v) => v.id !== node.id);
+		selectedNode = undefined;
 	}
 
 	window.addEventListener('mousemove', function(e: MouseEvent) {
@@ -75,22 +95,27 @@
 		}
 		switch (moveMode) {
 			case 'node':
-				const node = nodeData.find((v) => v.id === selectedNodeID);
+				const node = states.nodes.find((v) => v.id === selectedNodeID);
 				if (!node) return;
 				node.position.left += diff.x;
 				node.position.top += diff.y;
-				edgeData = updateEdgePath(edgeData);
+				states.edges = updateEdgePath(states.edges);
 				break;
 
 			case 'edge':
+				if (!isConnecting) break;
+				isConnecting.end = {
+					left: e.clientX,
+					top: e.clientY,
+				}
 				break;
 
 			case 'stage':
-				for (const node of nodeData) {
+				for (const node of states.nodes) {
 					node.position.left += diff.x;
 					node.position.top += diff.y;
 				}
-				edgeData = updateEdgePath(edgeData);
+				states.edges = updateEdgePath(states.edges);
 				break;
 
 			default:
@@ -101,26 +126,47 @@
 	});
 
 	window.addEventListener('mouseup', function(e: MouseEvent) {
+		if (moveMode === 'edge'
+		&& connectTargetIDs.out !== ''
+		&& connectTargetIDs.in !== '') {
+			states.edges.push(createEdge(connectTargetIDs))
+		}
 		isMouseDown = false;
 		selectedNodeID = "";
 		moveMode = '';
+		isConnecting = undefined;
+		connectTargetIDs = { in: '', out: '' }
 	});
 
-	let nodeData: NodeModel[] = $state(sampleNodes);
-	let edgeData: EdgeModel[] = $state(sampleEdges);
 	let selectedNode: NodeModel | undefined = $state(undefined);
-	onMount(() => edgeData = updateEdgePath(edgeData));
+	onMount(() => states.edges = updateEdgePath(states.edges));
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="stage" onmousedown={mouseDownOnStage}>
-	{#each nodeData as data}
-		<Node {data} {mouseDownOnNode} {mouseDownOnIO} selected={ data.id === selectedNode?.id } />
+	{#each states.nodes as data}
+		<Node
+			{data}
+			selected={ data.id === selectedNode?.id }
+			{mouseDownOnNode}
+			{mouseDownOnColumnOut}
+			{mouseEnterOnColumnIn}
+			{mouseLeaveOnColumnIn}
+		/>
 	{/each}
-	{#each edgeData as data}
+	<svg>
+	{#each states.edges as data}
 		<Edge {data} />
 	{/each}
-	<SidePanel {selectedNode} {addNode} />
+	{#if isConnecting}
+		<Connecting {...isConnecting} />
+	{/if}
+	</svg>
+	<SidePanel
+		{selectedNode}
+		{addNode}
+		{removeNode}
+	/>
 </div>
 
 <style lang="scss">	
@@ -133,5 +179,9 @@
 		// background-size: 30px 30px;
 		// background-image: linear-gradient(to right, #2f2f2f 1px, transparent 1px),
 		// 					linear-gradient(to bottom, #2f2f2f 1px, transparent 1px);
+	}
+	svg {
+		width: 100vw;
+		height: 100vh;
 	}
 </style>

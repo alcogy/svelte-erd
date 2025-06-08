@@ -2,31 +2,34 @@
 	import { SquarePlus } from 'lucide-svelte';
 	import { CirclePlus } from 'lucide-svelte';
 	import { Trash2 } from 'lucide-svelte';
-	import { v4 as uuid } from "uuid";
-	import type { Node as NodeModel, Column } from "$lib/components/types";
+	import type { Node as NodeModel, Column } from "$lib/types";
+	import { createColumn, updateEdgePath } from '$lib';
+	import { states } from '$lib/state.svelte';
+	import { DatabaseZap } from 'lucide-svelte';
+	import { Import } from 'lucide-svelte';
+	import { Settings } from 'lucide-svelte';
+
 
 	let {
 		selectedNode,
 		addNode,
+		removeNode,
 	} : {
 		selectedNode: NodeModel | undefined,
 		addNode: () => void,
+		removeNode: (node: NodeModel) => void,
 	} = $props();
 
+	const menuIconProps = { size: 20, color: "#ccc" }
+
 	function addColumn() {
-		selectedNode?.table.columns.push({
-			id: { in: uuid(), out: uuid() },
-			name: "new column",
-			type: 'int',
-			notNull: true,
-			default: 0,
-			comment: "",
-			pk: false,
-		});
+		selectedNode?.table.columns.push(createColumn());
 	}
 
 	function removeColumn(column: Column) {
 		if (!selectedNode) return;
+		states.edges = states.edges.filter((v) => v.in === column.id.in || v.out === column.id.out);
+		states.edges = updateEdgePath(states.edges);
 		selectedNode.table.columns = selectedNode.table.columns.filter((v) => v.id !== column.id);
 	}
 
@@ -40,26 +43,41 @@
 	<ul class="menu">
 		<li>
 			<button class="icon" onclick={addNode} title="Add Node">
-				<SquarePlus size={24} />
-			</button>				
+				<SquarePlus {...menuIconProps} />
+			</button>
+		</li>
+		<li>
+			<button class="icon" title="Create DDL">
+				<DatabaseZap {...menuIconProps} />
+			</button>
+		</li>
+		<li>
+			<button class="icon" title="Import">
+				<Import {...menuIconProps} />
+			</button>
+		</li>
+		<li>
+			<button class="icon" title="Settings">
+				<Settings {...menuIconProps} />
+			</button>
 		</li>
 	</ul>
 	{#if selectedNode}
 	<div>
-		<div>
-			<p>Table name</p>
+		<div class="table-wrap">
+			<p class="title">Table name</p>
 			<div>
 				<input type="text" placeholder="Enter the table name" bind:value={selectedNode.table.name} />
 			</div>
 		</div>
 		
-		<p>Columns</p>
+		<p class="title">Columns</p>
 		<ul class="column-list">
 			{#each selectedNode.table.columns as column}
 			<li>
 				<input type="text" bind:value={column.name} />
 				<button class="icon" title="Remove column" onclick={() => removeColumn(column)}>
-					<Trash2 color="#aaa" />
+					<Trash2 color="#aaa" size={20} />
 				</button> 
 			</li>
 			{/each}
@@ -71,10 +89,14 @@
 				onclick={addColumn}
 			>
 				<CirclePlus />
+				<span>Add column</span>
 			</button>
 		</div>
 	</div>
-	{/if}
+	<div>
+		<button class="remove-table" onclick={() => removeNode(selectedNode)}>Remove table</button>
+	</div>
+	{/if}	
 </div>
 
 <style lang="scss">
@@ -102,12 +124,37 @@
 			}
 		}
 	}
+	p.title {
+		font-weight: 500;
+		margin: 0 0 8px 0;
+		color: #ccc;
+	}
+	.table-wrap {
+		margin: 16px 0 32px 0;
+	}
 	.column-list li {
 		padding: 8px 0;
 		display: flex;
 		gap: 8px;
+		& input {
+			flex: 1;
+		}
 	}
 	.add-column-wrap {
 		margin-top: 10px;
+	}
+	button.remove-table {
+		border: 0;
+		background-color: #d22;
+		font-weight: 500;
+		font-size: 0.9rem;
+		color: #eee;
+		padding: 8px 16px;
+		border-radius: 6px;
+		cursor: pointer;
+		margin-top: 24px;
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 </style>
