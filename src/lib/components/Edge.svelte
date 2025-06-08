@@ -6,17 +6,21 @@
 <svg id={data.id}>
 	{#if data.path}
 	<path
-		stroke="gray"
+		stroke="#777"
 		fill="none"
-		stroke-width={2}
+		stroke-width={3}
 		d={`M ${data.path.start.left} ${data.path.start.top} Q ${(data.path.center.left + data.path.start.left) / 2} ${data.path.start.top}, ${data.path.center.left} ${data.path.center.top} T ${data.path.end.left} ${data.path.end.top}`}
 	/>
 	{/if}
 </svg>
 
-<style>
+<style lang="scss">
 	svg {
-		width: 100vw;
+		width: 100%;
 		height: 100vh;
+	}
+	
+	path:hover {
+		stroke: #e50;
 	}
 </style>

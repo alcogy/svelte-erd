@@ -9,6 +9,8 @@
 		mouseDownOnNode: (e: MouseEvent, id: string) => void
 		mouseDownOnIO: (e: MouseEvent, id: string) => void 
 	} = $props();
+
+	
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -20,7 +22,6 @@
 >
 	<header>
 		<div class="tablename">{data.table.name}</div>
-		<div class="collapse"></div>
 	</header>
 	<ul>
 		{#each data.table.columns as column}
@@ -39,17 +40,18 @@
 
 <style lang="scss">
 	.wrap {
-		width: 220px;
+		width: 200px;
 		background-color: transparent;
 		position: absolute;
 		user-select: none;
+		border-radius: 6px 6px 0 0;
+		box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 	}
 	header {
 		height: 32px;
 		display: flex;
-		padding: 0 16px;
-		gap: 16px;
 		align-items: center;
+		padding: 0 16px;
 		justify-content: space-between;
 		background-color: #cc3300;
 		border-radius: 6px 6px 0 0;
@@ -58,23 +60,8 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
-		& .collapse {
-			&::after {
-				content: '';
-				display: block;
-				width: 5px;
-				height: 5px;
-				border-left: 2px solid #eee;
-				border-bottom: 2px solid #eee;
-				transform: rotate(-45deg);
-			}
-		}
 	}
-	ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
+	
 	li {
 		height: 40px;
 		display: flex;
@@ -86,6 +73,11 @@
 		& div.in,
 		& div.out {
 			width: 16px;
+			height: 100%;
+		}
+		& div.out:hover {
+			background-color: #444;
+			cursor: move;
 		}
 		& div.column {
 			flex: 1;
