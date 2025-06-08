@@ -2,10 +2,12 @@
 	import type { Node as Model } from "./types";
 	let {
 		data,
+		selected,
 		mouseDownOnNode,
 		mouseDownOnIO,
 	} : {
 		data: Model,
+		selected: boolean,
 		mouseDownOnNode: (e: MouseEvent, id: string) => void
 		mouseDownOnIO: (e: MouseEvent, id: string) => void 
 	} = $props();
@@ -15,7 +17,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="wrap"
+	class={`wrap ${selected && 'selected'}`}
 	style:left={`${data.position.left}px`}
 	style:top={`${data.position.top}px`}
 	onmousedown={(e) => mouseDownOnNode(e, data.id)}
@@ -46,6 +48,10 @@
 		user-select: none;
 		border-radius: 6px 6px 0 0;
 		box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+		&.selected {
+			background-color: var(--main-color);
+			outline: 2px solid var(--main-color);
+		}
 	}
 	header {
 		height: 32px;
@@ -53,7 +59,7 @@
 		align-items: center;
 		padding: 0 16px;
 		justify-content: space-between;
-		background-color: #cc3300;
+		background-color: var(--main-color);
 		border-radius: 6px 6px 0 0;
 		& .tablename {
 			font-weight: 500;
@@ -83,6 +89,7 @@
 			flex: 1;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 	}
 	

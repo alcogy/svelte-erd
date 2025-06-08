@@ -1,26 +1,22 @@
 <script lang="ts">
-	import { SquarePlus } from 'lucide-svelte';
-
 	import Node from "$lib/components/Node.svelte";
 	import Edge from "$lib/components/Edge.svelte";
 	import { v4 as uuid } from "uuid";
-	import type { Node as NodeModel, Edge as EdgeModel, Path as PathModel, ColumnHTMLID } from "$lib/components/types";
+	import type { Node as NodeModel, Edge as EdgeModel, Path as PathModel, ColumnHTMLID, Column } from "$lib/components/types";
 	import { onMount } from "svelte";
 	import { sampleNodes, sampleEdges, updateEdgePath } from "$lib";
+	import SidePanel from "$lib/components/SidePanel.svelte";
 
 	let isMouseDown = false;
 	let selectedNodeID = "";
 	let mouse = { x: 0, y: 0 };
 	let moveMode: 'node' | 'edge' | 'stage' | '' = '';
 
-	function mouseDonOnPanel(e: MouseEvent) {
-		e.stopPropagation();
-	}
-
 	function mouseDownOnStage(e: MouseEvent) {
 		e.stopPropagation();
 		if (e.button !== 0) return;
 		selectedNodeID = "";
+		selectedNode = undefined;
 		isMouseDown = true;
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
@@ -35,7 +31,7 @@
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 		moveMode = 'node';
-		selectNode = nodeData.find((v) => v.id === id);
+		selectedNode = nodeData.find((v) => v.id === id);
 	}
 
 	function mouseDownOnIO(e: MouseEvent, id: string) {
@@ -52,8 +48,6 @@
 		nodeData.push({
 			id: uuid(),
 			position: { left: 20, top: 20 },
-			collapse: true,
-			selected: false,
 			table: {
 				name: "table name",
 				comment: "",
@@ -102,7 +96,6 @@
 			default:
 				return;
 		}
-		
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 	});
@@ -115,83 +108,30 @@
 
 	let nodeData: NodeModel[] = $state(sampleNodes);
 	let edgeData: EdgeModel[] = $state(sampleEdges);
-	let selectNode: NodeModel | undefined = $state(undefined);
+	let selectedNode: NodeModel | undefined = $state(undefined);
 	onMount(() => edgeData = updateEdgePath(edgeData));
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="stage" onmousedown={mouseDownOnStage}>
 	{#each nodeData as data}
-		<Node {data} {mouseDownOnNode} {mouseDownOnIO} />
+		<Node {data} {mouseDownOnNode} {mouseDownOnIO} selected={ data.id === selectedNode?.id } />
 	{/each}
 	{#each edgeData as data}
 		<Edge {data} />
 	{/each}
-	<div class="right-panel" onmousedown={mouseDonOnPanel}>
-		<ul class="menu">
-			<li>
-				<button onclick={addNode} title="Add Node">
-					<SquarePlus size={24} />
-				</button>				
-			</li>
-		</ul>
-		{#if selectNode}
-		<div>
-			<div>
-				<p>Table name</p>
-				<div>
-					<input type="text" placeholder="Enter the table name" bind:value={selectNode.table.name} />
-				</div>
-			</div>
-			
-			<p>Columns</p>
-			<ul class="column-list">
-				{#each selectNode.table.columns as colmun}
-				<li>{colmun.name}</li>
-				{/each}
-			</ul>
-			
-		</div>
-		{/if}
-	</div>
+	<SidePanel {selectedNode} {addNode} />
 </div>
 
 <style lang="scss">	
 	.stage {
-		width: 100%;
+		background-color: #393939;
+		width: 100vw;
 		height: 100vh;
 		overflow: hidden;
 		position: relative;
+		// background-size: 30px 30px;
+		// background-image: linear-gradient(to right, #2f2f2f 1px, transparent 1px),
+		// 					linear-gradient(to bottom, #2f2f2f 1px, transparent 1px);
 	}
-	.right-panel {
-		position: absolute;
-		overflow: auto;
-		background-color: #000;
-		height: 90vh;
-		width: 280px;
-		padding: 16px;
-		border-radius: 6px;
-		right: 8px;
-		top: 8px;
-		z-index: 9999;
-		box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-		& ul.menu {
-			display: flex;
-			gap: 8px;
-			& li {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-			& button {
-				background-color: transparent;
-				border: 0;
-				cursor: pointer;
-				&:hover {
-					opacity: 0.9;
-				}
-			}
-		}
-	}
-	
 </style>

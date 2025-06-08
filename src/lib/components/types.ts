@@ -14,8 +14,6 @@ export type Position = {
 export type Node = {
 	id: NodeID;
 	position: Position;
-	collapse: boolean;
-	selected: boolean;
 	table: Table;
 }
 
