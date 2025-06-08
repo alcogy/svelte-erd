@@ -1,4 +1,12 @@
 export type NodeID = string;
+export type EdgeID = string;
+export type ColumnInID = string;
+export type ColumnOutID = string;
+export type ColumnHTMLID = {
+	in: ColumnInID;
+	out: ColumnOutID;
+};
+
 export type Position = {
 	left: number;
 	top: number;
@@ -12,9 +20,15 @@ export type Node = {
 }
 
 export type Edge = {
-	id: string;
-	out: string;
-	in: string;
+	id: EdgeID;
+	out: ColumnOutID;
+	in: ColumnInID;
+	path: Path | null;
+}
+export type Path = {
+	start: Position;
+	end: Position;
+	center: Position;
 }
 
 export type Table = {
@@ -24,6 +38,7 @@ export type Table = {
 }
 
 export type Column = {
+	id: ColumnHTMLID;
 	name: string;
 	viewName?: string;
 	type: columnType;

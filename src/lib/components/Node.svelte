@@ -1,11 +1,13 @@
 <script lang="ts">
-	import type { Node as Model } from "../types";
+	import type { Node as Model } from "./types";
 	let {
 		data,
-		mouseDownOnNode
+		mouseDownOnNode,
+		mouseDownOnIO,
 	} : {
 		data: Model,
 		mouseDownOnNode: (e: MouseEvent, id: string) => void
+		mouseDownOnIO: (e: MouseEvent, id: string) => void 
 	} = $props();
 </script>
 
@@ -23,9 +25,13 @@
 	<ul>
 		{#each data.table.columns as column}
 		<li>
-			<div class="in"></div>
+			<div id={column.id.in} class="in"></div>
 			<div class="column">{column.name}</div>
-			<div class="out"></div>
+			<div
+				id={column.id.out}
+				class="out"
+				onmousedown={(e) => mouseDownOnIO(e, column.id.out)}
+			></div>
 		</li>
 		{/each}
 	</ul>
