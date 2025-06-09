@@ -1,5 +1,5 @@
 # Svelte ERD
-Svelte ERD is a make "Entity Relation Dialog" tool build by Svelte.
+Svelte ERD is a make "Entity Relationship Dialgram" tool build by Svelte.
 
 Reactive database info and make relation by drag and drop.
 
