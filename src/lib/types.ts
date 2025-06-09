@@ -6,7 +6,6 @@ export type ColumnHTMLID = {
 	in: ColumnInID;
 	out: ColumnOutID;
 };
-
 export type Position = {
 	left: number;
 	top: number;
@@ -16,7 +15,6 @@ export type Node = {
 	position: Position;
 	table: Table;
 }
-
 export type Edge = {
 	id: EdgeID;
 	out: ColumnOutID;
@@ -28,13 +26,12 @@ export type Path = {
 	end: Position;
 	center: Position;
 }
-
 export type Table = {
 	name: string;
 	comment: string;
 	columns: Column[];
 }
-
+export type columnType = 'int' | 'varchar' | 'text' | 'date' | 'datetime' | 'tinyint' | 'bigint';
 export type Column = {
 	id: ColumnHTMLID;
 	name: string;
@@ -46,9 +43,6 @@ export type Column = {
 	comment: string;
 	pk: boolean;
 }
-
-export type columnType = 'int' | 'varchar' | 'text' | 'date' | 'datetime' | 'tinyint' | 'bigint';
-
 export type globalState = {
 	nodes: Node[];
 	edges: Edge[];
