@@ -52,4 +52,5 @@ export type columnType = 'int' | 'varchar' | 'text' | 'date' | 'datetime' | 'tin
 export type globalState = {
 	nodes: Node[];
 	edges: Edge[];
+	selectedNode: Node | undefined;
 }

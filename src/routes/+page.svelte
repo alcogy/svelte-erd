@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Node from "$lib/components/Node.svelte";
 	import Edge from "$lib/components/Edge.svelte";
-	import type { Node as NodeModel, Position, ColumnHTMLID } from "$lib/types";
+	import type { Position, ColumnHTMLID } from "$lib/types";
 	import { onMount } from "svelte";
-	import { updateEdgePath, createTable, createEdge } from "$lib";
+	import { updateEdgePath, createEdge } from "$lib";
 	import { states } from "$lib/state.svelte";
 	import SidePanel from "$lib/components/SidePanel.svelte";
 	import Connecting from "$lib/components/Connecting.svelte";
@@ -22,7 +22,7 @@
 		e.stopPropagation();
 		if (e.button !== 0) return;
 		selectedNodeID = "";
-		selectedNode = undefined;
+		states.selectedNode = undefined;
 		isMouseDown = true;
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
@@ -37,7 +37,7 @@
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 		moveMode = 'node';
-		selectedNode = states.nodes.find((v) => v.id === id);
+		states.selectedNode = states.nodes.find((v) => v.id === id);
 	}
 
 	function mouseDownOnColumnOut(e: MouseEvent, id: string) {
@@ -72,19 +72,6 @@
 
 	function mouseLeaveOnColumnIn() {
 		connectTargetIDs.in = '';
-	}
-
-	function addNode() {
-		states.nodes.push(createTable());
-	}
-
-	function removeNode(node: NodeModel) {
-		if (!confirm('Are you sure?')) return;
-		for (const column of node.table.columns) {
-			states.edges = states.edges.filter((v) => v.in === column.id.in || v.out === column.id.out);
-		}
-		states.nodes = states.nodes.filter((v) => v.id !== node.id);
-		selectedNode = undefined;
 	}
 
 	window.addEventListener('mousemove', function(e: MouseEvent) {
@@ -138,8 +125,10 @@
 		connectTargetIDs = { in: '', out: '' }
 	});
 
-	let selectedNode: NodeModel | undefined = $state(undefined);
 	onMount(() => states.edges = updateEdgePath(states.edges));
+	$effect(() => {
+		states.edges = updateEdgePath(states.edges);
+	});
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -147,7 +136,7 @@
 	{#each states.nodes as data}
 		<Node
 			{data}
-			selected={ data.id === selectedNode?.id }
+			selected={ data.id === states.selectedNode?.id }
 			{mouseDownOnNode}
 			{mouseDownOnColumnOut}
 			{mouseEnterOnColumnIn}
@@ -162,11 +151,7 @@
 		<Connecting {...isConnecting} />
 	{/if}
 	</svg>
-	<SidePanel
-		{selectedNode}
-		{addNode}
-		{removeNode}
-	/>
+	<SidePanel />
 </div>
 
 <style lang="scss">	

@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { Edge as EdgeModel } from "../types";
+	import { removeEdge } from "$lib/state.svelte";
+		
 	let { data } : { data: EdgeModel} = $props();
 </script>
 
-
 {#if data.path}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<path
+		ondblclick={() => removeEdge(data)}
 		stroke="#777"
 		fill="none"
 		stroke-width={3}

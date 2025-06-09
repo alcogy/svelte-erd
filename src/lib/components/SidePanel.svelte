@@ -2,44 +2,16 @@
 	import { SquarePlus } from 'lucide-svelte';
 	import { CirclePlus } from 'lucide-svelte';
 	import { Trash2 } from 'lucide-svelte';
-	import type { Node as NodeModel, Column } from "$lib/types";
-	import { createColumn, updateEdgePath } from '$lib';
-	import { states } from '$lib/state.svelte';
+	import { states, addNode, removeNode, addColumn, removeColumn } from '$lib/state.svelte';
 	import { DatabaseZap } from 'lucide-svelte';
 	import { Import } from 'lucide-svelte';
 	import { Settings } from 'lucide-svelte';
 
-
-	let {
-		selectedNode,
-		addNode,
-		removeNode,
-	} : {
-		selectedNode: NodeModel | undefined,
-		addNode: () => void,
-		removeNode: (node: NodeModel) => void,
-	} = $props();
-
 	const menuIconProps = { size: 20, color: "#ccc" }
-
-	function addColumn() {
-		selectedNode?.table.columns.push(createColumn());
-	}
-
-	function removeColumn(column: Column) {
-		if (!selectedNode) return;
-		states.edges = states.edges.filter((v) => v.in === column.id.in || v.out === column.id.out);
-		states.edges = updateEdgePath(states.edges);
-		selectedNode.table.columns = selectedNode.table.columns.filter((v) => v.id !== column.id);
-	}
-
-	function mouseDonOnPanel(e: MouseEvent) {
-		e.stopPropagation();
-	}
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="right-panel" onmousedown={mouseDonOnPanel}>
+<div class="right-panel" onmousedown={(e) => e.stopPropagation()}>
 	<ul class="menu">
 		<li>
 			<button class="icon" onclick={addNode} title="Add Node">
@@ -62,22 +34,26 @@
 			</button>
 		</li>
 	</ul>
-	{#if selectedNode}
+	{#if states.selectedNode}
 	<div>
 		<div class="table-wrap">
 			<p class="title">Table name</p>
 			<div>
-				<input type="text" placeholder="Enter the table name" bind:value={selectedNode.table.name} />
+				<input type="text" placeholder="Enter the table name" bind:value={states.selectedNode.table.name} />
 			</div>
 		</div>
 		
 		<p class="title">Columns</p>
 		<ul class="column-list">
-			{#each selectedNode.table.columns as column}
+			{#each states.selectedNode.table.columns as column}
 			<li>
 				<input type="text" bind:value={column.name} />
-				<button class="icon" title="Remove column" onclick={() => removeColumn(column)}>
-					<Trash2 color="#aaa" size={20} />
+				<button
+					class="icon"
+					title="Remove column"
+					onclick={() => removeColumn(column)}
+				>
+					<Trash2 {...menuIconProps} />
 				</button> 
 			</li>
 			{/each}
@@ -86,7 +62,7 @@
 			<button
 				class="icon"
 				title="Add column"
-				onclick={addColumn}
+				onclick={() => addColumn()}
 			>
 				<CirclePlus />
 				<span>Add column</span>
@@ -94,7 +70,12 @@
 		</div>
 	</div>
 	<div>
-		<button class="remove-table" onclick={() => removeNode(selectedNode)}>Remove table</button>
+		<button
+			class="remove-table"
+			onclick={() => removeNode()}
+		>
+			Remove table
+		</button>
 	</div>
 	{/if}	
 </div>
