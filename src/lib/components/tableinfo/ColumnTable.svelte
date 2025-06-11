@@ -23,16 +23,16 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each columns as column}
+		{#each columns as column (column.id)}
 		<tr>
 			<td>
 				<input type="checkbox" bind:checked={column.pk} />
 			</td>
 			<td>
-				<input type="text" bind:value={column.name} />
+				<input type="text" name="name" bind:value={column.name} />
 			</td>
 			<td>
-				<input type="text" bind:value={column.viewName} />
+				<input type="text" name="viewName" bind:value={column.viewName} />
 			</td>
 			<td class="fit">
 				<select bind:value={column.type}>
@@ -111,7 +111,6 @@
 		font-size: 0.9rem;
 	}
 	select {
-		outline: none;
 		border: 1px solid #444;
 		min-width: 100px;
 	}

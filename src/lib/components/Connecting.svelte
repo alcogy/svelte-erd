@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { calcCenterPosition } from "$lib";
+	import { calcCenterPosition } from "$lib/helpers/edge";
 	import type { Position } from "../types";
 
 	let { start, end } : { start: Position, end: Position } = $props();

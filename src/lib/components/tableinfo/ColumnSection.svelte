@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CirclePlus } from 'lucide-svelte';
-	import { createColumn } from '$lib';
+	import { createColumn } from '$lib/helpers/table';
 	import ColumnTable from './ColumnTable.svelte';
 	import type { Column } from '$lib/types';
 

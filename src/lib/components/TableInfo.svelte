@@ -5,7 +5,7 @@
 	import ColumnSection from './tableinfo/ColumnSection.svelte';
 
 	let table: Table = $state(states.selectedNode?.table || { name: '', comment: '', columns: [] });
-	let columns: Column[] = $state(states.selectedNode ? [...states.selectedNode?.table.columns] : []);
+	let columns: Column[] = $state(states.selectedNode ? [...states.selectedNode.table.columns] : []);
 
 	function onClickCancel() {
 		states.showTableInfo = false;

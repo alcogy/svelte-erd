@@ -29,7 +29,7 @@
 	<div>
 		<p class="title">Columns</p>
 		<ul class="column-list">
-			{#each states.selectedNode.table.columns as column}
+			{#each states.selectedNode.table.columns as column (column.id)}
 			<li>
 				<input type="text" class="textfield" bind:value={column.viewName} />
 				<button

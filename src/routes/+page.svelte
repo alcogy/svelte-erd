@@ -3,7 +3,7 @@
 	import Edge from "$lib/components/Edge.svelte";
 	import type { Position, ColumnHTMLID } from "$lib/types";
 	import { onMount } from "svelte";
-	import { updateEdgePath, createEdge } from "$lib";
+	import { updateEdgePath, createEdge } from "$lib/helpers/edge";
 	import { states } from "$lib/state.svelte";
 	import SidePanel from "$lib/components/SidePanel.svelte";
 	import Connecting from "$lib/components/Connecting.svelte";
@@ -81,38 +81,39 @@
 			y: e.clientY - mouse.y,
 		}
 		switch (moveMode) {
-			case 'node':
+			case 'node': {
 				const node = states.nodes.find((v) => v.id === selectedNodeID);
 				if (!node) return;
 				node.position.left += diff.x;
 				node.position.top += diff.y;
 				states.edges = updateEdgePath(states.edges);
 				break;
-
-			case 'edge':
+			}
+			case 'edge': {
 				if (!isConnecting) break;
 				isConnecting.end = {
 					left: e.clientX,
 					top: e.clientY,
 				}
 				break;
-
-			case 'stage':
+			}
+			case 'stage': {
 				for (const node of states.nodes) {
 					node.position.left += diff.x;
 					node.position.top += diff.y;
 				}
 				states.edges = updateEdgePath(states.edges);
 				break;
-
-			default:
+			}
+			default: {
 				return;
+			}
 		}
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 	});
 
-	window.addEventListener('mouseup', function(e: MouseEvent) {
+	window.addEventListener('mouseup', function() {
 		if (moveMode === 'edge'
 		&& connectTargetIDs.out !== ''
 		&& connectTargetIDs.in !== '') {
@@ -133,7 +134,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="stage" onmousedown={mouseDownOnStage}>
-	{#each states.nodes as data}
+	{#each states.nodes as data (data.id)}
 		<Node
 			{data}
 			selected={ data.id === states.selectedNode?.id }
@@ -144,7 +145,7 @@
 		/>
 	{/each}
 	<svg>
-	{#each states.edges as data}
+	{#each states.edges as data (data.id)}
 		<Edge {data} />
 	{/each}
 	{#if isConnecting}

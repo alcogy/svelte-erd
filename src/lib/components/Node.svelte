@@ -30,7 +30,7 @@
 		<div class="tablename">{data.table.name}</div>
 	</header>
 	<ul>
-		{#each data.table.columns as column}
+		{#each data.table.columns as column (column.id)}
 		<li>
 			<div
 				class="column"

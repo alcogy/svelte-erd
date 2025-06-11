@@ -1,5 +1,6 @@
 import type { globalState } from '$lib/types';
-import { createColumn, createTable, extractConnectingEdges } from '$lib';
+import { createColumn, createTable } from '$lib/helpers/table';
+import { extractConnectingEdges } from '$lib/helpers/edge';
 import type { Edge as EdgeModel, Column } from "$lib/types";
 
 export const states = $state<globalState>({
