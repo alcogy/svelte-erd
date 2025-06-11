@@ -37,3 +37,10 @@ export function removeColumn(column: Column) {
 export function removeEdge(edge: EdgeModel) {
 	states.edges = states.edges.filter((v) => v.id !== edge.id);
 }
+
+export function clearStates() {
+	states.nodes = [],
+	states.edges = [],
+	states.selectedNode = undefined,
+	states.showTableInfo = false;
+}

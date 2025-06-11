@@ -161,9 +161,9 @@
 		height: 100vh;
 		overflow: hidden;
 		position: relative;
-		// background-size: 30px 30px;
-		// background-image: linear-gradient(to right, #2f2f2f 1px, transparent 1px),
-		// 					linear-gradient(to bottom, #2f2f2f 1px, transparent 1px);
+		background-size: 30px 30px;
+		background-image: linear-gradient(to right, #404040 1px, transparent 1px),
+							linear-gradient(to bottom, #404040 1px, transparent 1px);
 	}
 	svg {
 		width: 100vw;

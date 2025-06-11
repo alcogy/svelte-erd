@@ -1,99 +1,18 @@
 <script lang="ts">
-	import { SquarePlus } from 'lucide-svelte';
-	import { CirclePlus } from 'lucide-svelte';
-	import { Trash2 } from 'lucide-svelte';
-	import { states, addNode, removeNode, addColumn, removeColumn } from '$lib/state.svelte';
-	import { DatabaseZap } from 'lucide-svelte';
-	import { Import } from 'lucide-svelte';
-	import { Settings } from 'lucide-svelte';
+	import { states } from '$lib/state.svelte';
 	import TableInfo from "./TableInfo.svelte";
-
-	const menuIconProps = { size: 20, color: "#ccc" }
+	import HeadMenu from './sidepanel/HeadMenu.svelte';
+	import TableSummary from './sidepanel/TableSummary.svelte';	
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="right-panel" onmousedown={(e) => e.stopPropagation()}>
-	<ul class="menu">
-		<li>
-			<button class="icon" onclick={addNode} title="Add Node">
-				<SquarePlus {...menuIconProps} />
-			</button>
-		</li>
-		<li>
-			<button class="icon" title="Create DDL">
-				<DatabaseZap {...menuIconProps} />
-			</button>
-		</li>
-		<li>
-			<button class="icon" title="Import">
-				<Import {...menuIconProps} />
-			</button>
-		</li>
-		<li>
-			<button class="icon" title="Settings">
-				<Settings {...menuIconProps} />
-			</button>
-		</li>
-	</ul>
-	{#if states.selectedNode}
-	<div>
-		<div class="top-button">
-			<button
-				class="fill-button positive all-column"
-				onclick={() => states.showTableInfo = true}
-			>
-				Show table info
-			</button>
-		</div>
-		<div class="table-wrap">
-			<p class="title">Table name</p>
-			<div>
-				<input type="text" class="textfield" placeholder="Enter the table name" bind:value={states.selectedNode.table.name} />
-			</div>
-		</div>
-		<div>
-			<p class="title">Columns</p>
-			<ul class="column-list">
-				{#each states.selectedNode.table.columns as column}
-				<li>
-					<input type="text" class="textfield" bind:value={column.viewName} />
-					<button
-						class="icon"
-						title="Remove column"
-						onclick={() => removeColumn(column)}
-					>
-						<Trash2 {...menuIconProps} />
-					</button> 
-				</li>
-				{/each}
-			</ul>
-			<div class="add-column-wrap">
-				<button
-					class="icon"
-					title="Add column"
-					onclick={() => addColumn()}
-				>
-					<CirclePlus />
-					<span>Add column</span>
-				</button>
-			</div>
-		</div>
-	</div>
-	<div>
-		<button
-			class="fill-button attention remove-table"
-			onclick={() => removeNode()}
-		>
-			Remove table
-		</button>
-	</div>
-	{/if}	
+	<HeadMenu />
+	<TableSummary />
 </div>
-
 {#if states.showTableInfo}
 	<TableInfo />
 {/if}
-
 
 <style lang="scss">
 	.right-panel {
@@ -108,41 +27,5 @@
 		top: 8px;
 		z-index: 999;
 		box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-		& ul.menu {
-			display: flex;
-			gap: 8px;
-			border-bottom: 1px solid #555;
-			padding-bottom: 12px;
-			& li {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-		}
-	}
-	p.title {
-		font-weight: 500;
-		margin: 0 0 8px 0;
-		color: #ccc;
-	}
-	.table-wrap {
-		margin: 24px 0;
-	}
-	.column-list li {
-		padding: 8px 0;
-		display: flex;
-		gap: 8px;
-		& input {
-			flex: 1;
-		}
-	}
-	.add-column-wrap {
-		margin-top: 10px;
-	}
-	div.top-button {
-		margin-top: 16px;
-	}
-	button.fill-button.remove-table {
-		margin-top: 32px;
-	}
+	}	
 </style>
