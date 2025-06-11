@@ -6,6 +6,7 @@
 	import { DatabaseZap } from 'lucide-svelte';
 	import { Import } from 'lucide-svelte';
 	import { Settings } from 'lucide-svelte';
+	import TableInfo from "./TableInfo.svelte";
 
 	const menuIconProps = { size: 20, color: "#ccc" }
 </script>
@@ -36,42 +37,51 @@
 	</ul>
 	{#if states.selectedNode}
 	<div>
+		<div class="top-button">
+			<button
+				class="fill-button positive all-column"
+				onclick={() => states.showTableInfo = true}
+			>
+				Show table info
+			</button>
+		</div>
 		<div class="table-wrap">
 			<p class="title">Table name</p>
 			<div>
-				<input type="text" placeholder="Enter the table name" bind:value={states.selectedNode.table.name} />
+				<input type="text" class="textfield" placeholder="Enter the table name" bind:value={states.selectedNode.table.name} />
 			</div>
 		</div>
-		
-		<p class="title">Columns</p>
-		<ul class="column-list">
-			{#each states.selectedNode.table.columns as column}
-			<li>
-				<input type="text" bind:value={column.name} />
+		<div>
+			<p class="title">Columns</p>
+			<ul class="column-list">
+				{#each states.selectedNode.table.columns as column}
+				<li>
+					<input type="text" class="textfield" bind:value={column.viewName} />
+					<button
+						class="icon"
+						title="Remove column"
+						onclick={() => removeColumn(column)}
+					>
+						<Trash2 {...menuIconProps} />
+					</button> 
+				</li>
+				{/each}
+			</ul>
+			<div class="add-column-wrap">
 				<button
 					class="icon"
-					title="Remove column"
-					onclick={() => removeColumn(column)}
+					title="Add column"
+					onclick={() => addColumn()}
 				>
-					<Trash2 {...menuIconProps} />
-				</button> 
-			</li>
-			{/each}
-		</ul>
-		<div class="add-column-wrap">
-			<button
-				class="icon"
-				title="Add column"
-				onclick={() => addColumn()}
-			>
-				<CirclePlus />
-				<span>Add column</span>
-			</button>
+					<CirclePlus />
+					<span>Add column</span>
+				</button>
+			</div>
 		</div>
 	</div>
 	<div>
 		<button
-			class="remove-table"
+			class="fill-button attention remove-table"
 			onclick={() => removeNode()}
 		>
 			Remove table
@@ -79,6 +89,11 @@
 	</div>
 	{/if}	
 </div>
+
+{#if states.showTableInfo}
+	<TableInfo />
+{/if}
+
 
 <style lang="scss">
 	.right-panel {
@@ -91,7 +106,7 @@
 		border-radius: 6px;
 		right: 8px;
 		top: 8px;
-		z-index: 9999;
+		z-index: 999;
 		box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 		& ul.menu {
 			display: flex;
@@ -111,7 +126,7 @@
 		color: #ccc;
 	}
 	.table-wrap {
-		margin: 16px 0 32px 0;
+		margin: 24px 0;
 	}
 	.column-list li {
 		padding: 8px 0;
@@ -124,18 +139,10 @@
 	.add-column-wrap {
 		margin-top: 10px;
 	}
-	button.remove-table {
-		border: 0;
-		background-color: #d22;
-		font-weight: 500;
-		font-size: 0.9rem;
-		color: #eee;
-		padding: 8px 16px;
-		border-radius: 6px;
-		cursor: pointer;
-		margin-top: 24px;
-		&:hover {
-			opacity: 0.8;
-		}
+	div.top-button {
+		margin-top: 16px;
+	}
+	button.fill-button.remove-table {
+		margin-top: 32px;
 	}
 </style>

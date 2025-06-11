@@ -6,6 +6,7 @@ export const states = $state<globalState>({
 	nodes: [],
 	edges: [],
 	selectedNode: undefined,
+	showTableInfo: false,
 });
 
 export function addNode() {

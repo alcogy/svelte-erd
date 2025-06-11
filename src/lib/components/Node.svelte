@@ -37,7 +37,7 @@
 				id={column.id.in}
 				onmouseenter={() => mouseEnterOnColumnIn(column.id.in)}
 				onmouseleave={() => mouseLeaveOnColumnIn()}
-			>{column.name}</div>
+			>{column.viewName}</div>
 			<div
 				id={column.id.out}
 				class="out"

@@ -40,7 +40,8 @@ export function updateEdgePath(edges: EdgeModel[]): EdgeModel[] {
 export function createColumn(): Column {
 	return {
 		id: { in: uuid(), out: uuid() },
-		name: "column name",
+		name: 'column name',
+		viewName: 'column name',
 		type: 'varchar',
 		size: 255,
 		notNull: true,

@@ -47,4 +47,5 @@ export type globalState = {
 	nodes: Node[];
 	edges: Edge[];
 	selectedNode: Node | undefined;
+	showTableInfo: boolean;
 }
