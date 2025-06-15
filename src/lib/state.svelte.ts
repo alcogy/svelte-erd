@@ -1,17 +1,22 @@
 import type { globalState } from '$lib/types';
 import { createColumn, createTable } from '$lib/helpers/table';
 import { extractConnectingEdges } from '$lib/helpers/edge';
-import type { Edge as EdgeModel, Column } from "$lib/types";
+import type { Node as NodeModel, Edge as EdgeModel, Column } from "$lib/types";
 
 export const states = $state<globalState>({
 	nodes: [],
 	edges: [],
 	selectedNode: undefined,
 	showTableInfo: false,
+	isConnecting: undefined,
 });
 
-export function addNode() {
-	states.nodes.push(createTable());
+export function addNode(left?: number, top?: number): NodeModel {
+	if (left === undefined) left = 20;
+	if (top === undefined) top = 20;
+	const node = createTable(left, top);
+	states.nodes.push(node);
+	return node;
 }
 
 export function removeNode() {

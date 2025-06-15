@@ -15,10 +15,10 @@ export function createColumn(): Column {
 	}
 }
 
-export function createTable(): NodeModel {
+export function createTable(left: number, top: number): NodeModel {
 	return {
 		id: uuid(),
-		position: { left: 20, top: 20 },
+		position: { left: left, top: top },
 		table: {
 			name: "table_name",
 			viewName: "Table Name",

@@ -59,4 +59,5 @@ export type globalState = {
 	edges: Edge[];
 	selectedNode: Node | undefined;
 	showTableInfo: boolean;
+	isConnecting: { start: Position, end: Position } | undefined;
 }

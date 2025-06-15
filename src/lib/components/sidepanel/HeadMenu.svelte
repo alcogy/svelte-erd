@@ -17,7 +17,7 @@
 
 <ul class="menu">
 	<li>
-		<button class="icon" title="Add Node" onclick={addNode}>
+		<button class="icon" title="Add Node" onclick={() => addNode()}>
 			<SquarePlus {...menuIconProps} />
 		</button>
 	</li>

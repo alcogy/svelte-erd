@@ -1,22 +1,14 @@
 <script lang="ts">
-	import type { Node as Model } from "../types";
-	let {
-		data,
-		selected,
+	import type { Node as NodeModel } from "../types";
+	import { 
 		mouseDownOnNode,
 		mouseDownOnColumnOut,
 		mouseEnterOnColumnIn,
 		mouseLeaveOnColumnIn,
-	} : {
-		data: Model,
-		selected: boolean,
-		mouseDownOnNode: (e: MouseEvent, id: string) => void
-		mouseDownOnColumnOut: (e: MouseEvent, id: string) => void 
-		mouseEnterOnColumnIn: (id: string) => void
-		mouseLeaveOnColumnIn: () => void
-	} = $props();
+		mouseDblClickOnNode,
+	} from "$lib/helpers/mouseActions";
 
-	
+	let { data, selected } : { data: NodeModel, selected: boolean } = $props();
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -25,6 +17,7 @@
 	style:left={`${data.position.left}px`}
 	style:top={`${data.position.top}px`}
 	onmousedown={(e) => mouseDownOnNode(e, data.id)}
+	ondblclick={(e) => mouseDblClickOnNode(e, data)}
 >
 	<header>
 		<div class="tablename">{data.table.viewName}</div>
