@@ -4,7 +4,7 @@
 	import TableSection from './tableinfo/TableSection.svelte';
 	import ColumnSection from './tableinfo/ColumnSection.svelte';
 
-	let table: Table = $state(states.selectedNode?.table || { name: '', comment: '', columns: [] });
+	let table: Table = $state(states.selectedNode?.table || { name: '', viewName: '', columns: [] });
 	let columns: Column[] = $state(states.selectedNode ? [...states.selectedNode.table.columns] : []);
 
 	function onClickCancel() {
@@ -25,7 +25,7 @@
 	<div class="box">
 		{#if states.selectedNode}
 		<div class="main">
-			<TableSection bind:name={table.name} bind:comment={table.comment} />
+			<TableSection bind:name={table.name} bind:viewName={table.viewName} />
 			<ColumnSection bind:columns={columns} />
 		</div>
 		{/if}

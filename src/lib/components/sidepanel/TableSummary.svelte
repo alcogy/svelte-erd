@@ -23,7 +23,12 @@
 	<div class="table-wrap">
 		<p class="title">Table name</p>
 		<div>
-			<input type="text" class="textfield" placeholder="Enter the table name" bind:value={states.selectedNode.table.name} />
+			<input
+				type="text"
+				class="textfield"
+				placeholder="Enter the table name"
+				bind:value={states.selectedNode.table.viewName}
+			/>
 		</div>
 	</div>
 	<div>

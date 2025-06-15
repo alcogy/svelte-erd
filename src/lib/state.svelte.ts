@@ -16,7 +16,6 @@ export function addNode() {
 
 export function removeNode() {
 	if (!states.selectedNode) return;
-	if (!confirm('Are you sure?')) return;
 	const node = states.selectedNode;
 	for (const column of node.table.columns) {
 		states.edges = extractConnectingEdges(states.edges, column);

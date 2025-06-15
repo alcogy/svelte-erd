@@ -27,7 +27,7 @@
 	onmousedown={(e) => mouseDownOnNode(e, data.id)}
 >
 	<header>
-		<div class="tablename">{data.table.name}</div>
+		<div class="tablename">{data.table.viewName}</div>
 	</header>
 	<ul>
 		{#each data.table.columns as column (column.id)}

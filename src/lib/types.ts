@@ -28,15 +28,26 @@ export type Path = {
 }
 export type Table = {
 	name: string;
-	comment: string;
+	viewName: string;
 	columns: Column[];
 }
-export type columnType = 'int' | 'varchar' | 'text' | 'date' | 'datetime' | 'tinyint' | 'bigint';
+
+export enum ColumnType {
+	serial = 'serial',
+	integer = 'integer',
+	smallint = 'smallint',
+	bigint = 'bigint', 
+	characterVarying = 'character varying',
+	text = 'text',
+	date = 'date',
+	time = 'time',
+	timestamp = 'timestamp',
+}
 export type Column = {
 	id: ColumnHTMLID;
 	name: string;
-	viewName?: string;
-	type: columnType;
+	viewName: string;
+	type: ColumnType;
 	size?: number;
 	notNull: boolean;
 	default: number | string | Date;

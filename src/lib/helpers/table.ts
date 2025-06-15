@@ -1,4 +1,4 @@
-import type { Node as NodeModel, Column } from "$lib/types";
+import { type Node as NodeModel, type Column, ColumnType } from "$lib/types";
 import { v4 as uuid } from "uuid";
 
 export function createColumn(): Column {
@@ -6,7 +6,7 @@ export function createColumn(): Column {
 		id: { in: uuid(), out: uuid() },
 		name: 'column_name',
 		viewName: 'Column name',
-		type: 'varchar',
+		type: ColumnType.characterVarying,
 		size: 255,
 		notNull: true,
 		default: "",
@@ -21,7 +21,7 @@ export function createTable(): NodeModel {
 		position: { left: 20, top: 20 },
 		table: {
 			name: "table_name",
-			comment: "",
+			viewName: "Table Name",
 			columns: [createColumn()],
 		}
 	}

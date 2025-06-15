@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { name = $bindable(), comment = $bindable() }: { name: string, comment: string } = $props();
+	let { name = $bindable(), viewName = $bindable() }: { name: string, viewName: string } = $props();
 </script>
 
 <div class="table-info-wrap">
@@ -9,8 +9,8 @@
 		<input type="text" class="textfield" bind:value={name} />
 	</div>
 	<div>
-		<p>Comment</p>
-		<input type="text" class="textfield" bind:value={comment} />
+		<p>Logical name (View)</p>
+		<input type="text" class="textfield" bind:value={viewName} />
 	</div>
 </div>
 

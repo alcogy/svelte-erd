@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Trash2 } from 'lucide-svelte';
-	import type { Column } from '$lib/types';
+	import { ColumnType, type Column } from '$lib/types';
+	import { hasSizeType } from '$lib/helpers/database';
 
 	let { columns = $bindable() } : { columns: Column[] } = $props();
 	function removeColumn(column: Column) {
@@ -13,7 +14,7 @@
 		<tr>
 			<th class="fit">PK</th>
 			<th>Column Name</th>
-			<th>Logical name</th>
+			<th>Logical name (View)</th>
 			<th>Type</th>
 			<th>Size</th>
 			<th class="fit">Not NULL</th>
@@ -36,17 +37,13 @@
 			</td>
 			<td class="fit">
 				<select bind:value={column.type}>
-					<option value='int'>int</option>
-					<option value='tinyint'>tinyint</option>
-					<option value='bigint'>bigint</option>
-					<option value='varchar'>varchar</option>
-					<option value='text'>text</option>
-					<option value='date'>date</option>
-					<option value='datetime'>datetime</option>
+					{#each Object.values(ColumnType) as value (value)}
+					<option value={value}>{value}</option>
+					{/each}
 				</select>
 			</td>
-			<td class="fit">
-				{#if ['int', 'tinyint', 'bigint', 'varchar'].includes(column.type)}
+			<td class="fix-size-s">
+				{#if hasSizeType(column.type)}
 				<input type="number" bind:value={column.size} step={1} min={0} />
 				{/if}
 			</td>
@@ -94,6 +91,9 @@
 		& td {
 			background-color: #111;
 			padding: 4px;
+			&.fix-size-s {
+				width: 75px;
+			}
 		}
 	}
 	input[type='text'], input[type='number'] {
@@ -112,6 +112,6 @@
 	}
 	select {
 		border: 1px solid #444;
-		min-width: 100px;
+		width: 160px;
 	}
 </style>
