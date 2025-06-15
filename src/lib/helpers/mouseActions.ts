@@ -126,7 +126,10 @@ export function mouseUpOnWindow(_: MouseEvent) {
 	if (moveMode === 'edge'
 	&& connectTargetIDs.out !== ''
 	&& connectTargetIDs.in !== '') {
-		states.edges.push(createEdge(connectTargetIDs))
+		const edge = createEdge(connectTargetIDs);
+		if (edge !== undefined) {
+			states.edges.push(edge);
+		}
 	}
 	isMouseDown = false;
 	selectedNodeID = "";

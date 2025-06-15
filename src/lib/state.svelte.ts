@@ -1,9 +1,9 @@
-import type { globalState } from '$lib/types';
+import type { GlobalState } from '$lib/types';
 import { createColumn, createTable } from '$lib/helpers/table';
 import { extractConnectingEdges } from '$lib/helpers/edge';
 import type { Node as NodeModel, Edge as EdgeModel, Column } from "$lib/types";
 
-export const states = $state<globalState>({
+export const states = $state<GlobalState>({
 	nodes: [],
 	edges: [],
 	selectedNode: undefined,

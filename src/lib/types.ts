@@ -54,10 +54,23 @@ export type Column = {
 	comment: string;
 	pk: boolean;
 }
-export type globalState = {
+export type GlobalState = {
 	nodes: Node[];
 	edges: Edge[];
 	selectedNode: Node | undefined;
 	showTableInfo: boolean;
 	isConnecting: { start: Position, end: Position } | undefined;
+}
+
+export type Relation = {
+	fk: {
+		id: ColumnOutID;
+		tableName: string;
+		columnName: string;
+	},
+	reference: {
+		id: ColumnInID;
+		tableName: string;
+		columnName: string;
+	}
 }

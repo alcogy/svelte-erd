@@ -1,5 +1,6 @@
-import type { Edge as EdgeModel, Path as PathModel, ColumnHTMLID, Column, Position } from "$lib/types";
+import type { Edge as EdgeModel, Path as PathModel, ColumnHTMLID, Column, Position, Relation } from "$lib/types";
 import { v4 as uuid } from "uuid";
+import { states } from "$lib/state.svelte";
 
 export function calcCenterPosition(start: Position, end: Position): Position {
 	return {
@@ -15,7 +16,8 @@ export function updateEdgePath(edges: EdgeModel[]): EdgeModel[] {
 	return edges;
 }
 
-export function createEdge(id: ColumnHTMLID): EdgeModel {
+export function createEdge(id: ColumnHTMLID): EdgeModel | undefined {
+	if (states.edges.map((v) => v.out).includes(id.out)) return;
 	return {
 		id: uuid(),
 		out: id.out,
@@ -46,4 +48,36 @@ function calcEdgePath(column: ColumnHTMLID): PathModel {
 		end: end,
 		center: calcCenterPosition(start, end),
 	}
+}
+
+export function makeRelations(): Relation[] {
+	const results: Relation[] = [];
+	const columns: { column: Column, tableName: string }[] = [];
+	for (const node of states.nodes) {
+		for (const column of node.table.columns) {
+			columns.push({ column: column, tableName: node.table.name }) ;
+		}
+	}
+	for (const edge of states.edges) {
+		const fkColumn = columns.find((v) => v.column.id.out === edge.out);
+		if (fkColumn === undefined) continue;
+
+		const refColumn = columns.find((v) => v.column.id.in === edge.in);
+		if (refColumn === undefined) continue;
+
+		results.push({
+			fk: {
+				id: fkColumn.column.id.out,
+				tableName: fkColumn.tableName,
+				columnName: fkColumn.column.name,
+			},
+			reference: {
+				id: refColumn.column.id.in,
+				tableName: refColumn.tableName,
+				columnName: refColumn.column.name,
+			}
+		})
+	}
+
+	return results;
 }

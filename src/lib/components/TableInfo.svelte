@@ -21,7 +21,7 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="wrap" onmousedown={(e) => e.stopPropagation()}>
+<div class="wrap" onmousedown={(e) => e.stopPropagation()} ondblclick={(e) => e.stopPropagation()}>
 	<div class="box">
 		{#if states.selectedNode}
 		<div class="main">

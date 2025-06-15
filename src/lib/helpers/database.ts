@@ -1,5 +1,6 @@
 import { states } from "$lib/state.svelte";
 import { DataType } from "$lib/types";
+import { makeRelations } from "./edge";
 import { createFile } from "./file";
 
 export function hasSizeType(type: DataType) {
@@ -25,7 +26,7 @@ export function createDDL() {
 			let col = '';
 			col += INDENT;
 			col += `\`${column.name}\` ${column.type}`;
-			col += hasSizeType(column.type) && `(${column.size})`;
+			col += hasSizeType(column.type) ? `(${column.size})` : '';
 			col += column.notNull && ' NOT NULL';
 			col += column.default && ` DEFAULT ${column.default}`;
 			columns.push(col);
@@ -34,15 +35,29 @@ export function createDDL() {
 				pks.push(column.name);
 			}
 		}
-
 		table += columns.join(',\n');
+
 		if (pks.length > 0) {
 			table += ',\n';
-			table += `${INDENT}PRIMARY KEY (${pks.join(', ')})\n`;
-		} else {
-			table += '\n';
+			table += `${INDENT}PRIMARY KEY (${pks.join(', ')})`;
 		}
-		table += ');';
+
+		if (states.edges.length > 0) {
+			const relations = makeRelations();
+			const relationSet: string[] = [];
+			for (const rel of relations) {
+				if (node.table.columns.find((v) => v.id.out === rel.fk.id) === undefined) {
+					continue;
+				}
+				const str = `${INDENT}CONSTRAINT fk_${rel.fk.columnName} FOREIGN KEY(${rel.fk.columnName}) REFERENCES ${rel.reference.tableName}(${rel.reference.columnName})`;
+				relationSet.push(str);
+			}
+			if (relationSet.length > 0) {
+				table += ',\n' + relationSet.join(',\n');
+			}	
+		} 
+
+		table += '\n);';
 		results.push(table);
 	}
 	const contents = results.join('\n\n');
