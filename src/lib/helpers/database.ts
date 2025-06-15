@@ -1,5 +1,6 @@
 import { states } from "$lib/state.svelte";
 import { ColumnType } from "$lib/types";
+import { createFile } from "./file";
 
 export function hasSizeType(type: ColumnType) {
 	if (type === ColumnType.characterVarying) return true;
@@ -7,7 +8,6 @@ export function hasSizeType(type: ColumnType) {
 }
 
 export function createDDL() {
-
 	if (states.nodes.length === 0) {
 		alert('Table infos not exists.');
 		return;
@@ -49,17 +49,4 @@ export function createDDL() {
 	createFile('DDL.sql', contents);
 }
 
-function createFile(fileName: string, contents: string) {
-	const file = new File([contents], fileName);
-	const a = document.createElement('a');
-	const url = URL.createObjectURL(file);
-	a.href = url;
-	a.download = fileName;
-	a.style = 'display: none;';
-	document.body.appendChild(a);
-  	a.click();
-
-  	document.body.removeChild(a);
-  	window.URL.revokeObjectURL(url)
-}
 

@@ -33,7 +33,7 @@ export function mouseDownOnNode(e: MouseEvent, id: string) {
 	states.selectedNode = states.nodes.find((v) => v.id === id);
 }
 
-export function mouseDownOnColumnOut(e: MouseEvent, id: string) {
+export function mouseDownOnColumnOut(e: MouseEvent, columnOutId: string) {
 	e.stopPropagation();
 	if (e.button !== 0) return;
 
@@ -43,9 +43,12 @@ export function mouseDownOnColumnOut(e: MouseEvent, id: string) {
 	mouse.y = e.clientY;
 	moveMode = 'edge';
 
-	const io = document.getElementById(id) as HTMLElement;
+	const io = document.getElementById(columnOutId) as HTMLElement;
 	if (!io) return;
-	connectTargetIDs.out = id;
+
+	states.edges = states.edges.filter((v) => v.out !== columnOutId);
+
+	connectTargetIDs.out = columnOutId;
 	const rect = io.getBoundingClientRect();
 	states.isConnecting = {
 		start: {

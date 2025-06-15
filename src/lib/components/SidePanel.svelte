@@ -2,12 +2,14 @@
 	import { states } from '$lib/state.svelte';
 	import TableInfo from "./TableInfo.svelte";
 	import HeadMenu from './sidepanel/HeadMenu.svelte';
+	import TableMenu from './sidepanel/TableMenu.svelte';
 	import TableSummary from './sidepanel/TableSummary.svelte';	
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="right-panel" onmousedown={(e) => e.stopPropagation()}>
+<div class="right-panel" onmousedown={(e) => e.stopPropagation()} ondblclick={(e) => e.stopPropagation()}>
 	<HeadMenu />
+	<TableMenu />
 	<TableSummary />
 </div>
 {#if states.showTableInfo}

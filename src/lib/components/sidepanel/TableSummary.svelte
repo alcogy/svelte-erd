@@ -1,25 +1,11 @@
 <script lang="ts">
 	import { CirclePlus } from 'lucide-svelte';
 	import { Trash2 } from 'lucide-svelte';
-	import { states, addColumn, removeColumn, removeNode } from '$lib/state.svelte';
+	import { states, addColumn, removeColumn } from '$lib/state.svelte';
 </script>
 
 {#if states.selectedNode}
 <div>
-	<div class="top-button">
-		<button
-			class="fill-button positive all-column"
-			onclick={() => states.showTableInfo = true}
-		>
-			Edit table info
-		</button>
-		<button
-			class="fill-button attention remove-table"
-			onclick={() => removeNode()}
-		>
-			Remove table
-		</button>
-	</div>
 	<div class="table-wrap">
 		<p class="title">Table name</p>
 		<div>
@@ -65,17 +51,6 @@
 {/if}
 
 <style lang="scss">
-	.top-button {
-		display: flex;
-		gap: 8px;
-		margin-top: 16px;
-		& > button {
-			flex: 1;
-			white-space: nowrap;
-			padding-left: 0;
-			padding-right: 0;
-		}
-	}
 	.table-wrap {
 		margin: 24px 0;
 	}

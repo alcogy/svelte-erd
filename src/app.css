@@ -34,6 +34,7 @@ button.fill-button {
 	color: #eee;
 	padding: 8px 16px;
 	border-radius: 6px;
+	user-select: none;
 }
 button.fill-button.positive {
 	background-color: #175;
@@ -42,11 +43,11 @@ button.fill-button.attention {
 	background-color: #d22;
 }
 button.fill-button.cancel {
-	background-color: #555;
+	background-color: #666;
 }
 button.fill-button:disabled {
-	background-color: #777;
-	color: #444;
+	background-color: #444;
+	color: #888;
 }
 button.fill-button:not(:disabled):hover {
 	opacity: 0.8;

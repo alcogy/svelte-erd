@@ -44,8 +44,8 @@ export function removeEdge(edge: EdgeModel) {
 }
 
 export function clearStates() {
-	states.nodes = [],
-	states.edges = [],
-	states.selectedNode = undefined,
+	states.selectedNode = undefined;
 	states.showTableInfo = false;
+	states.edges = [];
+	states.nodes = [];
 }

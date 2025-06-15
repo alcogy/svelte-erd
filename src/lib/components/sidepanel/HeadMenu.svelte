@@ -1,58 +1,37 @@
 <script lang="ts">
-	import { DatabaseZap } from 'lucide-svelte';
-	import { Import } from 'lucide-svelte';
-	import { Settings } from 'lucide-svelte';
-	import { SquarePlus } from 'lucide-svelte';
-	import { addNode, clearStates } from '$lib/state.svelte';
-	import { createDDL } from '$lib/helpers/database';
-	import { BrushCleaning } from 'lucide-svelte';
-
-	const menuIconProps = { size: 20, color: "#ccc" }
-
+	import { states, clearStates } from '$lib/state.svelte';
+	
 	function onClickClear() {
 		if (!confirm('Are you sure?')) return;
 		clearStates();
 	}
 </script>
 
-<ul class="menu">
-	<li>
-		<button class="icon" title="Add Node" onclick={() => addNode()}>
-			<SquarePlus {...menuIconProps} />
-		</button>
-	</li>
-	<li>
-		<button class="icon" title="Create DDL"onclick={createDDL}>
-			<DatabaseZap {...menuIconProps} />
-		</button>
-	</li>
-	<!-- <li>
-		<button class="icon" title="Import">
-			<Import {...menuIconProps} />
-		</button>
-	</li>
-	<li>
-		<button class="icon" title="Settings">
-			<Settings {...menuIconProps} />
-		</button>
-	</li> -->
-	<li>
-		<button class="icon" title="Clear" onclick={onClickClear}>
-			<BrushCleaning {...menuIconProps} />
-		</button>
-	</li>
-</ul>
+<div class="top-button">
+	<button
+		class="fill-button positive all-column"
+		onclick={() => states.showTableInfo = true}
+		disabled={states.selectedNode === undefined}
+	>
+		Edit table info
+	</button>
+	<button
+		class="fill-button attention remove-table"
+		onclick={() => onClickClear()}
+	>
+		Clear All
+	</button>
+</div>
 
 <style lang="scss">
-	ul.menu {
+	.top-button {
 		display: flex;
 		gap: 8px;
-		border-bottom: 1px solid #555;
-		padding-bottom: 12px;
-		& li {
-			display: flex;
-			align-items: center;
-			justify-content: center;
+		& > button {
+			flex: 1;
+			white-space: nowrap;
+			padding-left: 0;
+			padding-right: 0;
 		}
-	}	
+	}
 </style>
