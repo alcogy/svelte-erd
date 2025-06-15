@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Trash2 } from 'lucide-svelte';
-	import { ColumnType, type Column } from '$lib/types';
+	import { DataType, type Column } from '$lib/types';
 	import { hasSizeType } from '$lib/helpers/database';
 
 	let { columns = $bindable() } : { columns: Column[] } = $props();
@@ -37,7 +37,7 @@
 			</td>
 			<td class="fit">
 				<select bind:value={column.type}>
-					{#each Object.values(ColumnType) as value (value)}
+					{#each Object.values(DataType) as value (value)}
 					<option value={value}>{value}</option>
 					{/each}
 				</select>

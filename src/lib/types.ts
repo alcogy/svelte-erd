@@ -32,7 +32,7 @@ export type Table = {
 	columns: Column[];
 }
 
-export enum ColumnType {
+export enum DataType {
 	serial = 'serial',
 	integer = 'integer',
 	smallint = 'smallint',
@@ -47,7 +47,7 @@ export type Column = {
 	id: ColumnHTMLID;
 	name: string;
 	viewName: string;
-	type: ColumnType;
+	type: DataType;
 	size?: number;
 	notNull: boolean;
 	default: number | string | Date;

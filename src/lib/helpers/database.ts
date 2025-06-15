@@ -1,9 +1,9 @@
 import { states } from "$lib/state.svelte";
-import { ColumnType } from "$lib/types";
+import { DataType } from "$lib/types";
 import { createFile } from "./file";
 
-export function hasSizeType(type: ColumnType) {
-	if (type === ColumnType.characterVarying) return true;
+export function hasSizeType(type: DataType) {
+	if (type === DataType.characterVarying) return true;
 	return false;
 }
 
